@@ -1,10 +1,54 @@
 package Mojolicious::Plugin::Blog;
-use Mojo::Base 'Mojolicious::Plugin';
 
-our $VERSION = '0.01';
+use strictures 1;
+use Mojo::Base 'Mojolicious::Plugin';
+use File::Basename 'dirname';
+use File::Spec::Functions 'catdir';
+
+use Mojolicious::Plugin::Blog::Controller;
+
+# VERSION
+
+my %defaults = (
+    title       => 'Mojomomo Blog Plugin',
+    slogan      => 'Im a really neat gorilla',
+    author      => 'me-n-u',
+    contact     => 'momo\@example.com',
+    tz          => 'America/New_York',
+    social      => {github => 'battlemidget', coderwall => 'battlemidget'},
+    indexPath   => '/blog/index',
+    archivePath => '/blog/archives',
+    postPath    => '/blog/:id',
+    namespace   => 'Mojolicious::Plugin::Blog::Controller',
+);
 
 sub register {
-  my ($self, $app) = @_;
+    my ($self, $app) = @_;
+    my (%conf) = (%defaults, %{$_[2] || {}});
+
+    my $base = catdir(dirname(__FILE__), 'Blog');
+    push @{$app->renderer->paths}, catdir($base, 'templates');
+    push @{$app->static->paths},   catdir($base, 'public');
+
+    push @{$app->renderer->classes}, __PACKAGE__;
+    push @{$app->static->classes},   __PACKAGE__;
+
+    $app->routes->route($conf{indexPath})->via('GET')->to(
+        namespace => $conf{namespace},
+        action    => 'index',
+    );
+
+    $app->routes->route($conf{archivePath})->via('GET')->to(
+        namespace => $conf{namespace},
+        action    => 'archive',
+    );
+
+    $app->routes->route($conf{postPath})->via('GET')->to(
+        namespace => $conf{namespace},
+        action    => 'detail',
+    );
+
+    return;
 }
 
 1;
