@@ -20,13 +20,16 @@ my %defaults = (
     archivePath => '/blog/archives',
     postPath    => '/blog/:id',
     namespace   => 'Mojolicious::Plugin::Blog::Controller',
+
+    # Use json if you wish to provide custom templates.
+    renderType => undef,
 );
 
 sub register {
     my ($self, $app) = @_;
     my (%conf) = (%defaults, %{$_[2] || {}});
 
-    my $base = catdir(dirname(__FILE__), 'Blog');
+    my $base = catdir(dirname(__FILE__), 'BlogAssets');
     push @{$app->renderer->paths}, catdir($base, 'templates');
     push @{$app->static->paths},   catdir($base, 'public');
 
@@ -34,20 +37,24 @@ sub register {
     push @{$app->static->classes},   __PACKAGE__;
 
     $app->routes->route($conf{indexPath})->via('GET')->to(
-        namespace => $conf{namespace},
-        action    => 'index',
+        namespace  => $conf{namespace},
+        action     => 'blog_index',
+        _blog_conf => \%conf,
     );
 
     $app->routes->route($conf{archivePath})->via('GET')->to(
-        namespace => $conf{namespace},
-        action    => 'archive',
+        namespace  => $conf{namespace},
+        action     => 'blog_archive',
+        _blog_conf => \%conf,
     );
 
     $app->routes->route($conf{postPath})->via('GET')->to(
-        namespace => $conf{namespace},
-        action    => 'detail',
+        namespace  => $conf{namespace},
+        action     => 'blog_detail',
+        _blog_conf => \%conf,
     );
 
+    $app->helper(blogconf => sub { \%conf });
     return;
 }
 
