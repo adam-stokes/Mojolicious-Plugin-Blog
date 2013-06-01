@@ -162,7 +162,8 @@ Mojolicious::Plugin::Blog - Mojolicious Plugin
 
 =head1 DESCRIPTION
 
-L<Mojolicious::Plugin::Blog> is a L<Mojolicious> plugin.
+L<Mojolicious::Plugin::Blog> is a L<Mojolicious> plugin. The database layer is using L<DBIx::ResultSet> so
+support for most databases is available. The examples in this distribution utilize Postgres.
 
 =head1 OPTIONS
 
@@ -272,8 +273,30 @@ viewing all blog posts and by detail.
 
 Complete Administration section for adding/deleting/updating.
 
+=head1 GOALS
+
+Hopefully make this as database agnostic as possible and the overall
+plugin a useful starting point for those wishing to implement a blog in
+Mojolicious.
+
+=head1 PATCHES
+
+I love patches and community involvement, so please get involved and submit
+pull requests and issues at
+
+L<https://github.com/battlemidget/Mojolicious-Plugin-Blog>
+
 =head1 SEE ALSO
 
 L<Mojolicious>, L<Mojolicious::Guides>, L<http://mojolicio.us>.
+
+=head1 COPYRIGHT AND LICENSE
+
+This plugin is copyright (c) 2013 by Adam Stokes <adamjs@cpan.org>
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+L<Mojolicious> is copyright (c) 2013 Sebastian Riedel <sri@cpan.org>
 
 =cut
