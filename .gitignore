@@ -19,3 +19,4 @@ Mojolicious-Plugin-Blog-*.tar.gz
 MANIFEST.bak
 .carton
 local/
+*.bak
