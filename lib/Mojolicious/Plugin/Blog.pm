@@ -10,19 +10,35 @@ use Mojolicious::Plugin::Blog::Controller;
 # VERSION
 
 my %defaults = (
-    title       => 'Mojomomo Blog Plugin',
-    slogan      => 'Im a really neat gorilla',
-    author      => 'me-n-u',
-    contact     => 'momo\@example.com',
-    tz          => 'America/New_York',
-    social      => {github => 'battlemidget', coderwall => 'battlemidget'},
-    indexPath   => '/blog/index',
-    archivePath => '/blog/archives',
-    postPath    => '/blog/:id',
-    namespace   => 'Mojolicious::Plugin::Blog::Controller',
 
-    # Use json if you wish to provide custom templates.
-    renderType => undef,
+    # Basic options
+    title   => 'Mojomomo Blog Plugin',
+    slogan  => 'Im a really neat gorilla',
+    author  => 'me-n-u',
+    contact => 'momo\@example.com',
+    tz      => 'America/New_York',
+
+    # Social Integration options
+    social => {
+        github    => 'battlemidget',
+        coderwall => 'battlemidget',
+        twitter   => 'ajscg',
+    },
+
+    # Default routes
+    indexPath       => '/blog/index',
+    archivePath     => '/blog/archives',
+    postPath        => '/blog/:id',
+    adminPathPrefix => '/admin',
+
+    # Router namespace
+    namespace => 'Mojolicious::Plugin::Blog::Controller',
+
+    # Set this to the under route for blog administration
+    authCondition => undef,
+
+    # TODO: Use json if you wish to provide custom templates.
+    # renderType => undef,
 );
 
 sub register {
@@ -35,6 +51,8 @@ sub register {
 
     push @{$app->renderer->classes}, __PACKAGE__;
     push @{$app->static->classes},   __PACKAGE__;
+
+    $app->helper(blogconf => sub { \%conf });
 
     $app->routes->route($conf{indexPath})->via('GET')->to(
         namespace  => $conf{namespace},
@@ -54,7 +72,29 @@ sub register {
         _blog_conf => \%conf,
     );
 
-    $app->helper(blogconf => sub { \%conf });
+    my $auth_r = $app->routes->under($conf{authCondition}->{authenticated});
+    if ($auth_r) {
+        $auth_r->route($conf{adminPathPrefix} . "/blog/new")->via('GET')->to(
+            namespace  => $conf{namespace},
+            action     => 'admin_blog_new',
+            _blog_conf => \%conf,
+        );
+        $auth_r->route($conf{adminPathPrefix} . "/blog/edit/:id")->via('GET')->to(
+            namespace  => $conf{namespace},
+            action     => 'admin_blog_edit',
+            _blog_conf => \%conf,
+        );
+        $auth_r->route($conf{adminPathPrefix} . "/blog/update/:id")->via('POST')->to(
+            namespace  => $conf{namespace},
+            action     => 'admin_blog_update',
+            _blog_conf => \%conf,
+        );
+        $auth_r->route($conf{adminPathPrefix} . "/blog/delete/:id")->via('GET')->to(
+            namespace  => $conf{namespace},
+            action     => 'admin_blog_delete',
+            _blog_conf => \%conf,
+        );
+    }
     return;
 }
 
@@ -68,10 +108,32 @@ Mojolicious::Plugin::Blog - Mojolicious Plugin
 =head1 SYNOPSIS
 
   # Mojolicious
-  $self->plugin('Blog');
+
+  # Set authentication condition
+  my $conditions = {
+    authenticated => sub {
+        my $self = shift;
+        unless ($self->session('authenticated')) {
+            $self->flash(
+                class   => 'alert alert-info',
+                message => 'Please log in first!'
+            );
+            $self->redirect_to('/login');
+            return;
+        }
+        return 1;
+    },
+  };
+
+  $self->plugin('Blog' => {
+      authCondition => $conditions
+    }
+  );
 
   # Mojolicious::Lite
-  plugin 'Blog';
+  plugin 'Blog' => {
+    authCondition => $conditions
+  };
 
 =head1 DESCRIPTION
 

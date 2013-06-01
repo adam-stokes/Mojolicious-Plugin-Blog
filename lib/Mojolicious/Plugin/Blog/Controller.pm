@@ -7,23 +7,79 @@ use Mojo::Base 'Mojolicious::Controller';
 use Data::Dump qw[pp];
 
 sub blog_index {
-  my $self = shift;
+    my $self = shift;
 
-  $self->render('blog_index');
+    $self->render('blog_index');
 }
 
 sub blog_archive {
-  my $self = shift;
-  $self->render('blog_archive');
+    my $self = shift;
+    $self->render('blog_archive');
 }
 
 sub blog_detail {
-  my $self = shift;
-  my $postid = shift;
+    my $self   = shift;
+    my $postid = shift;
 
-  $self->stash(postid => $self->param('id'));
-  $self->render('blog_detail');
+    $self->stash(postid => $self->param('id'));
+    $self->render('blog_detail');
+}
+
+sub admin_blog_new {
+    my $self = shift;
+    $self->render('admin_blog_new');
+}
+
+sub admin_blog_edit {
+    my $self   = shift;
+    my $postid = $self->param('id');
+
+    $self->render('admin_blog_edit');
+}
+
+sub admin_blog_update {
+    my $self   = shift;
+    my $postid = $self->param('id');
+
+    $self->flash(message => "Blog $postid updated.");
+    $self->redirect_to(
+        $self->blogconf->adminPathPrefix . "/blog/edit/$postid");
+}
+
+sub admin_blog_delete {
+    my $self   = shift;
+    my $postid = $self->param('id');
+
+    $self->flash(message => "Blog $postid deleted.");
+    $self->redirect_to($self->blogconf->adminPathPrefix . "/blog/new");
 }
 
 1;
 __END__
+
+=head1 NAME
+
+Mojolicious::Plugin::Blog::Controller - blog plugin controller
+
+=head1 DESCRIPTION
+
+Simple controller class for handling listing, viewing, and administering
+blog posts.
+
+=head1 CONTROLLERS
+
+=head2 B<blog_index>
+
+=head2 B<blog_archive>
+
+=head2 B<blog_detail>
+
+=head2 B<admin_blog_new>
+
+=head2 B<admin_blog_edit>
+
+=head2 B<admin_blog_update>
+
+=head2 B<admin_blog_delete>
+
+=cut

@@ -1,0 +1,47 @@
+NAME
+    Mojolicious::Plugin::Blog - Mojolicious Plugin
+
+SYNOPSIS
+      # Mojolicious
+
+      # Set authentication condition
+      my $conditions = {
+        authenticated => sub {
+            my $self = shift;
+            unless ($self->session('authenticated')) {
+                $self->flash(
+                    class   => 'alert alert-info',
+                    message => 'Please log in first!'
+                );
+                $self->redirect_to('/login');
+                return;
+            }
+            return 1;
+        },
+      };
+
+      $self->plugin('Blog' => {
+          authCondition => $conditions
+        }
+      );
+
+      # Mojolicious::Lite
+      plugin 'Blog' => {
+        authCondition => $conditions
+      };
+
+DESCRIPTION
+    Mojolicious::Plugin::Blog is a Mojolicious plugin.
+
+METHODS
+    Mojolicious::Plugin::Blog inherits all methods from Mojolicious::Plugin
+    and implements the following new ones.
+
+  register
+      $plugin->register(Mojolicious->new);
+
+    Register plugin in Mojolicious application.
+
+SEE ALSO
+    Mojolicious, Mojolicious::Guides, http://mojolicio.us.
+
