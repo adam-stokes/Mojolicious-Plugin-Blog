@@ -7,21 +7,35 @@ use Mojo::Base 'Mojolicious::Controller';
 use Data::Dump qw[pp];
 
 sub blog_index {
-    my $self = shift;
+    my $self  = shift;
+    my $rs    = $self->blogconf->{dbrs};
+    my $posts = $rs->search({}, {limit => 15})
+      ->array_of_hash_rows(['id', 'title', 'body', 'created']);
 
+    pp($posts);
+    $self->stash(postlist => $posts);
     $self->render('blog_index');
 }
 
 sub blog_archive {
     my $self = shift;
+    my $rs    = $self->blogconf->{dbrs};
+    my $posts = $rs->array_of_hash_rows(['id', 'title', 'body', 'created']);
+
+    pp($posts);
+    $self->stash(postlist => $posts);
     $self->render('blog_archive');
 }
 
 sub blog_detail {
     my $self   = shift;
-    my $postid = shift;
+    my $postid = $self->param('id');
 
-    $self->stash(postid => $self->param('id'));
+    my $rs = $self->blogconf->{dbrs};
+    my $post = $rs->search({ id => $postid})->hash_row(['id', 'title', 'body', 'created']);
+
+    pp($post);
+    $self->stash(post => $post);
     $self->render('blog_detail');
 }
 

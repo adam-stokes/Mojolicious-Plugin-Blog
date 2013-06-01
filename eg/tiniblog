@@ -17,7 +17,12 @@ my $conditions = {
     },
 };
 
-plugin 'Blog' => {authCondition => $conditions};
+plugin 'Blog' => {
+    authCondition => $conditions,
+    dsn           => "dbi:Pg:dbname=myblog",
+    dbuser        => 'zef',
+    dbpass        => $ENV{DBPASS},
+};
 
 # Documentation browser under "/perldoc"
 plugin 'PODRenderer';
@@ -32,7 +37,7 @@ get '/login' => sub {
     $self->render(text => 'Setup your login authorization form here');
 };
 
-  app->start;
+app->start;
 __DATA__
 
 @@ index.html.ep

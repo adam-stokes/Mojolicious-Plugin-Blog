@@ -4,6 +4,7 @@ use strictures 1;
 use Mojo::Base 'Mojolicious::Plugin';
 use File::Basename 'dirname';
 use File::Spec::Functions 'catdir';
+use DBIx::ResultSet;
 
 use Mojolicious::Plugin::Blog::Controller;
 
@@ -24,6 +25,13 @@ my %defaults = (
         coderwall => 'battlemidget',
         twitter   => 'ajscg',
     },
+
+    # DBIx::Connector supported Database Credentials
+    dsn    => undef,
+    dbuser => undef,
+    dbpass => undef,
+    dbconn => undef,
+    dbrs   => undef,
 
     # Default routes
     indexPath       => '/blog/index',
@@ -54,6 +62,14 @@ sub register {
 
     $app->helper(blogconf => sub { \%conf });
 
+    # Connect to our trusty database
+    $app->blogconf->{dbconn} = DBIx::ResultSet->connect(
+        $app->blogconf->{dsn},
+        $app->blogconf->{dbuser},
+        $app->blogconf->{dbpass},
+    );
+    $app->blogconf->{dbrs} = $app->blogconf->{dbconn}->resultset('posts');
+
     $app->routes->route($conf{indexPath})->via('GET')->to(
         namespace  => $conf{namespace},
         action     => 'blog_index',
@@ -79,21 +95,24 @@ sub register {
             action     => 'admin_blog_new',
             _blog_conf => \%conf,
         );
-        $auth_r->route($conf{adminPathPrefix} . "/blog/edit/:id")->via('GET')->to(
+        $auth_r->route($conf{adminPathPrefix} . "/blog/edit/:id")->via('GET')
+          ->to(
             namespace  => $conf{namespace},
             action     => 'admin_blog_edit',
             _blog_conf => \%conf,
-        );
-        $auth_r->route($conf{adminPathPrefix} . "/blog/update/:id")->via('POST')->to(
+          );
+        $auth_r->route($conf{adminPathPrefix} . "/blog/update/:id")
+          ->via('POST')->to(
             namespace  => $conf{namespace},
             action     => 'admin_blog_update',
             _blog_conf => \%conf,
-        );
-        $auth_r->route($conf{adminPathPrefix} . "/blog/delete/:id")->via('GET')->to(
+          );
+        $auth_r->route($conf{adminPathPrefix} . "/blog/delete/:id")
+          ->via('GET')->to(
             namespace  => $conf{namespace},
             action     => 'admin_blog_delete',
             _blog_conf => \%conf,
-        );
+          );
     }
     return;
 }
@@ -127,17 +146,111 @@ Mojolicious::Plugin::Blog - Mojolicious Plugin
 
   $self->plugin('Blog' => {
       authCondition => $conditions
+      dsn => "dbi:Pg:dbname=myblog",
+      dbuser => 'zef',
+      dbpass => 'letmein',
     }
   );
 
   # Mojolicious::Lite
   plugin 'Blog' => {
-    authCondition => $conditions
+    authCondition => $conditions,
+    dsn => "dbi:Pg:dbname=myblog",
+    dbuser => 'zef',
+    dbpass => 'letmein',
   };
 
 =head1 DESCRIPTION
 
 L<Mojolicious::Plugin::Blog> is a L<Mojolicious> plugin.
+
+=head1 OPTIONS
+
+The blog options provide the gateway into defining your routes,
+database connection, authentication conditions, blog title, slogan,
+and more.
+
+=head2 C<title>
+
+Your blog title.
+
+=head2 C<slogan>
+
+Blog slogan.
+
+=head2 C<author>
+
+Who are you?
+
+=head2 C<contact>
+
+Your email
+
+=head2 C<tz>
+
+What timezone are you? e.g. 'America/New_York' for EST.
+
+=head2 C<social>
+
+Not implemented yet. However, support for integrating github, coderwall,
+twitter, and others coming soon.
+
+    # Social Integration options
+    social => {
+        github    => 'battlemidget',
+        coderwall => 'battlemidget',
+        twitter   => 'ajscg',
+    },
+
+=head2 C<dsn>
+
+Database URI
+
+=head2 C<dbuser>
+
+Database User
+
+=head2 C<dbpass>
+
+Database password
+
+=head2 C<dbconn>
+
+Database connection, doesn't need to be manually set.
+
+=head2 C<dbrs>
+
+Database Resultset, again doesn't need to be set unless you
+implement your own database layer.
+
+=head2 C<indexPath>
+
+Blog index route
+
+=head2 C<archivePath>
+
+Blog archive path
+
+=head2 C<postPath>
+
+Blog detail post path
+
+=head2 C<adminPathPrefix>
+
+Blog admin prefix route
+
+=head2 C<namespace>
+
+Blog controller namespace.
+
+=head2 C<authCondition>
+
+Router bridge for authencating the blog admin section. See the SYNOPSIS for example.
+
+=head2 C<renderType>
+
+Not Implemented, however the thought behind this was to allow return JSON in case
+someone wanted to override existing templates.
 
 =head1 METHODS
 
@@ -149,6 +262,15 @@ L<Mojolicious::Plugin> and implements the following new ones.
   $plugin->register(Mojolicious->new);
 
 Register plugin in L<Mojolicious> application.
+
+=head1 WHAT WORKS
+
+Examples are include to show a work copy of the blog plugin for
+viewing all blog posts and by detail.
+
+=head1 TODO
+
+Complete Administration section for adding/deleting/updating.
 
 =head1 SEE ALSO
 

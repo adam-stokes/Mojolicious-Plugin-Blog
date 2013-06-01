@@ -1,3 +1,9 @@
 % layout 'blog_layout';
 
-Im the index body!
+<h2>Blog index</h2>
+
+<ul>
+<% foreach (@{$postlist}) { %>
+<li><%= $_->{title} %></li>
+<% } %>
+</ul>
