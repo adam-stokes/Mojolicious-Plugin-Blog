@@ -20,3 +20,4 @@ MANIFEST.bak
 .carton
 local/
 *.bak
+db/*.db

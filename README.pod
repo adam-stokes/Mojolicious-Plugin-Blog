@@ -22,24 +22,20 @@ SYNOPSIS
 
       $self->plugin('Blog' => {
           authCondition => $conditions
-          dsn => "dbi:Pg:dbname=myblog",
-          dbuser => 'zef',
-          dbpass => 'letmein',
+          dsn => "dbi:SQLite:dbname=myblog.db",
         }
       );
 
       # Mojolicious::Lite
       plugin 'Blog' => {
         authCondition => $conditions,
-        dsn => "dbi:Pg:dbname=myblog",
-        dbuser => 'zef',
-        dbpass => 'letmein',
+        dsn => "dbi:SQLite:dbname=myblog.db",
       };
 
 DESCRIPTION
     Mojolicious::Plugin::Blog is a Mojolicious plugin. The database layer is
     using DBIx::ResultSet so support for most databases is available. The
-    examples in this distribution utilize Postgres.
+    examples in this distribution utilize SQLite.
 
 OPTIONS
     The blog options provide the gateway into defining your routes, database

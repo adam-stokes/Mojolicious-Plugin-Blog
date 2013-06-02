@@ -34,7 +34,7 @@ my %defaults = (
     dbrs   => undef,
 
     # Default routes
-    indexPath       => '/blog/index',
+    indexPath       => '/blog/',
     archivePath     => '/blog/archives',
     postPath        => '/blog/:id',
     adminPathPrefix => '/admin',
@@ -88,8 +88,17 @@ sub register {
         _blog_conf => \%conf,
     );
 
-    my $auth_r = $app->routes->under($conf{authCondition}->{authenticated});
+    my $auth_r;
+    if ($conf{authCondition}) {
+        $auth_r = $app->routes->under($conf{authCondition}->{authenticated});
+    }
     if ($auth_r) {
+        $auth_r->route($conf{adminPathPrefix} . "/blog/")->via('GET')->to(
+            namespace  => $conf{namespace},
+            action     => 'admin_blog_index',
+            _blog_conf => \%conf,
+        );
+
         $auth_r->route($conf{adminPathPrefix} . "/blog/new")->via('GET')->to(
             namespace  => $conf{namespace},
             action     => 'admin_blog_new',

@@ -12,7 +12,6 @@ sub blog_index {
     my $posts = $rs->search({}, {limit => 15})
       ->array_of_hash_rows(['id', 'title', 'body', 'created']);
 
-    pp($posts);
     $self->stash(postlist => $posts);
     $self->render('blog_index');
 }
@@ -22,7 +21,6 @@ sub blog_archive {
     my $rs    = $self->blogconf->{dbrs};
     my $posts = $rs->array_of_hash_rows(['id', 'title', 'body', 'created']);
 
-    pp($posts);
     $self->stash(postlist => $posts);
     $self->render('blog_archive');
 }
@@ -34,19 +32,34 @@ sub blog_detail {
     my $rs = $self->blogconf->{dbrs};
     my $post = $rs->search({ id => $postid})->hash_row(['id', 'title', 'body', 'created']);
 
-    pp($post);
     $self->stash(post => $post);
     $self->render('blog_detail');
 }
 
+sub admin_blog_index {
+    my $self = shift;
+    my $rs    = $self->blogconf->{dbrs};
+    my $posts = $rs->search({}, {limit => 15})
+      ->array_of_hash_rows(['id', 'title', 'body', 'created']);
+
+    $self->stash(postlist => $posts);
+    $self->render('admin_blog_index');
+}
+
 sub admin_blog_new {
     my $self = shift;
+
     $self->render('admin_blog_new');
 }
 
 sub admin_blog_edit {
     my $self   = shift;
     my $postid = $self->param('id');
+
+    my $rs = $self->blogconf->{dbrs};
+    my $post = $rs->search({ id => $postid})->hash_row(['id', 'title', 'body', 'created']);
+
+    $self->stash(post => $post);
 
     $self->render('admin_blog_edit');
 }
@@ -55,17 +68,26 @@ sub admin_blog_update {
     my $self   = shift;
     my $postid = $self->param('id');
 
-    $self->flash(message => "Blog $postid updated.");
+    my $rs = $self->blogconf->{dbrs};
+    my $post =
+      $rs->search({id => $postid})
+      ->update(
+        {title => $self->param('title'), body => $self->param('body')});
+    $self->flash(message => "Blog ".$self->param('title')." updated.");
     $self->redirect_to(
-        $self->blogconf->adminPathPrefix . "/blog/edit/$postid");
+        $self->blogconf->{adminPathPrefix} . "/blog/edit/$postid");
 }
 
 sub admin_blog_delete {
     my $self   = shift;
     my $postid = $self->param('id');
 
-    $self->flash(message => "Blog $postid deleted.");
-    $self->redirect_to($self->blogconf->adminPathPrefix . "/blog/new");
+    my $rs = $self->blogconf->{dbrs};
+    my $post =
+      $rs->search({id => $postid})
+      ->delete();
+    $self->flash(message => "Blog ".$postid." deleted.");
+    $self->redirect_to($self->blogconf->{adminPathPrefix} . "/blog/");
 }
 
 1;
