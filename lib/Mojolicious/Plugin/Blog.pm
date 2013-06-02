@@ -99,7 +99,7 @@ sub register {
             _blog_conf => \%conf,
         );
 
-        $auth_r->route($conf{adminPathPrefix} . "/blog/new")->via('GET')->to(
+        $auth_r->route($conf{adminPathPrefix} . "/blog/new")->via(qw(GET POST))->to(
             namespace  => $conf{namespace},
             action     => 'admin_blog_new',
             _blog_conf => \%conf,

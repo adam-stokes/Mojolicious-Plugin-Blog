@@ -17,7 +17,7 @@ sub blog_index {
 }
 
 sub blog_archive {
-    my $self = shift;
+    my $self  = shift;
     my $rs    = $self->blogconf->{dbrs};
     my $posts = $rs->array_of_hash_rows(['id', 'title', 'body', 'created']);
 
@@ -30,14 +30,15 @@ sub blog_detail {
     my $postid = $self->param('id');
 
     my $rs = $self->blogconf->{dbrs};
-    my $post = $rs->search({ id => $postid})->hash_row(['id', 'title', 'body', 'created']);
+    my $post = $rs->search({id => $postid})
+      ->hash_row(['id', 'title', 'body', 'created']);
 
     $self->stash(post => $post);
     $self->render('blog_detail');
 }
 
 sub admin_blog_index {
-    my $self = shift;
+    my $self  = shift;
     my $rs    = $self->blogconf->{dbrs};
     my $posts = $rs->search({}, {limit => 15})
       ->array_of_hash_rows(['id', 'title', 'body', 'created']);
@@ -47,9 +48,23 @@ sub admin_blog_index {
 }
 
 sub admin_blog_new {
-    my $self = shift;
+    my $self   = shift;
+    my $method = $self->req->method;
+    if ($method eq "POST") {
+        my $rs = $self->blogconf->{dbrs};
+        $rs->insert(
+            {   title => $self->param('title'),
+                body  => $self->param('body'),
+            }
+        );
 
-    $self->render('admin_blog_new');
+        $self->flash(
+            message => "New blog post " . $self->param('title') . " added.");
+        $self->redirect_to($self->url_for('adminblog'));
+    }
+    else {
+        $self->render('admin_blog_new');
+    }
 }
 
 sub admin_blog_edit {
@@ -57,7 +72,8 @@ sub admin_blog_edit {
     my $postid = $self->param('id');
 
     my $rs = $self->blogconf->{dbrs};
-    my $post = $rs->search({ id => $postid})->hash_row(['id', 'title', 'body', 'created']);
+    my $post = $rs->search({id => $postid})
+      ->hash_row(['id', 'title', 'body', 'created']);
 
     $self->stash(post => $post);
 
@@ -73,9 +89,8 @@ sub admin_blog_update {
       $rs->search({id => $postid})
       ->update(
         {title => $self->param('title'), body => $self->param('body')});
-    $self->flash(message => "Blog ".$self->param('title')." updated.");
-    $self->redirect_to(
-        $self->blogconf->{adminPathPrefix} . "/blog/edit/$postid");
+    $self->flash(message => "Blog " . $self->param('title') . " updated.");
+    $self->redirect_to($self->url_for('adminblogeditid', {id => $postid}));
 }
 
 sub admin_blog_delete {
