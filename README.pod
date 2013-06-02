@@ -22,20 +22,29 @@ SYNOPSIS
 
       $self->plugin('Blog' => {
           authCondition => $conditions
-          dsn => "dbi:SQLite:dbname=myblog.db",
+          dsn => "dbi:SQLite:dbname=db/myblog.db",
         }
       );
 
       # Mojolicious::Lite
       plugin 'Blog' => {
         authCondition => $conditions,
-        dsn => "dbi:SQLite:dbname=myblog.db",
+        dsn => "dbi:SQLite:dbname=db/myblog.db",
       };
+
+      # Pre-populate db
+      ./bin/mojo-blog-db sqlite db/myblog.db
+
+      # Running the example
+      morbo ./eg/tiniblog
+
+      # See available routes
+      ./eg/tiniblog routes
 
 DESCRIPTION
     Mojolicious::Plugin::Blog is a Mojolicious plugin. The database layer is
     using DBIx::ResultSet so support for most databases is available. The
-    examples in this distribution utilize SQLite.
+    examples in this distribution utilize Postgres.
 
 OPTIONS
     The blog options provide the gateway into defining your routes, database
@@ -116,11 +125,13 @@ METHODS
     Register plugin in Mojolicious application.
 
 WHAT WORKS
-    Examples are include to show a work copy of the blog plugin for viewing
-    all blog posts and by detail.
+    Examples are included to show a working copy of the blog plugin for
+    viewing blog posts, creating/updating/deleting posts. As well as a
+    elementary way of authenticating to show the working admin portion.
 
 TODO
-    Complete Administration section for adding/deleting/updating.
+    * Add form validation
+    * Make default pages look less 1990s.
 
 GOALS
     Hopefully make this as database agnostic as possible and the overall

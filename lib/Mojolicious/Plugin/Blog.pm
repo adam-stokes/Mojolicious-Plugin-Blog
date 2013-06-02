@@ -155,19 +155,25 @@ Mojolicious::Plugin::Blog - Mojolicious Plugin
 
   $self->plugin('Blog' => {
       authCondition => $conditions
-      dsn => "dbi:Pg:dbname=myblog",
-      dbuser => 'zef',
-      dbpass => 'letmein',
+      dsn => "dbi:SQLite:dbname=db/myblog.db",
     }
   );
 
   # Mojolicious::Lite
   plugin 'Blog' => {
     authCondition => $conditions,
-    dsn => "dbi:Pg:dbname=myblog",
-    dbuser => 'zef',
-    dbpass => 'letmein',
+    dsn => "dbi:SQLite:dbname=db/myblog.db",
   };
+
+
+  # Pre-populate db
+  ./bin/mojo-blog-db sqlite db/myblog.db
+
+  # Running the example
+  morbo ./eg/tiniblog
+
+  # See available routes
+  ./eg/tiniblog routes
 
 =head1 DESCRIPTION
 
@@ -275,12 +281,19 @@ Register plugin in L<Mojolicious> application.
 
 =head1 WHAT WORKS
 
-Examples are include to show a work copy of the blog plugin for
-viewing all blog posts and by detail.
+Examples are included to show a working copy of the blog plugin for
+viewing blog posts, creating/updating/deleting posts. As well as a
+elementary way of authenticating to show the working admin portion.
 
 =head1 TODO
 
-Complete Administration section for adding/deleting/updating.
+=over 8
+
+=item * Add form validation
+
+=item * Make default pages look less 1990s.
+
+=back
 
 =head1 GOALS
 
