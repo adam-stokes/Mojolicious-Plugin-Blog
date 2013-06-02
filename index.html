@@ -1,0 +1,208 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Mojolicious::Plugin::Blog by battlemidget</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/battlemidget/Mojolicious-Plugin-Blog">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/battlemidget/Mojolicious-Plugin-Blog/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/battlemidget/Mojolicious-Plugin-Blog/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Mojolicious::Plugin::Blog</h1>
+          <p>Blog plugin for Mojolicious - quick, simple, ready to go.</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/battlemidget">battlemidget</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <p>NAME
+    Mojolicious::Plugin::Blog - Mojolicious Plugin</p>
+
+<p>SYNOPSIS
+      # Mojolicious</p>
+
+<pre><code>  # Set authentication condition
+  my $conditions = {
+    authenticated =&gt; sub {
+        my $self = shift;
+        unless ($self-&gt;session('authenticated')) {
+            $self-&gt;flash(
+                class   =&gt; 'alert alert-info',
+                message =&gt; 'Please log in first!'
+            );
+            $self-&gt;redirect_to('/login');
+            return;
+        }
+        return 1;
+    },
+  };
+
+  $self-&gt;plugin('Blog' =&gt; {
+      authCondition =&gt; $conditions
+      dsn =&gt; "dbi:SQLite:dbname=db/myblog.db",
+    }
+  );
+
+  # Mojolicious::Lite
+  plugin 'Blog' =&gt; {
+    authCondition =&gt; $conditions,
+    dsn =&gt; "dbi:SQLite:dbname=db/myblog.db",
+  };
+
+  # Pre-populate db
+  ./bin/mojo-blog-db sqlite db/myblog.db
+
+  # Running the example
+  morbo ./eg/tiniblog
+
+  # See available routes
+  ./eg/tiniblog routes
+</code></pre>
+
+<p>DESCRIPTION
+    Mojolicious::Plugin::Blog is a Mojolicious plugin. The database layer is
+    using DBIx::ResultSet so support for most databases is available. The
+    examples in this distribution utilize Postgres.</p>
+
+<p>OPTIONS
+    The blog options provide the gateway into defining your routes, database
+    connection, authentication conditions, blog title, slogan, and more.</p>
+
+<p>`title'
+    Your blog title.</p>
+
+<p>`slogan'
+    Blog slogan.</p>
+
+<p>`author'
+    Who are you?</p>
+
+<p>`contact'
+    Your email</p>
+
+<p>`tz'
+    What timezone are you? e.g. 'America/New_York' for EST.</p>
+
+<p>`social'
+    Not implemented yet. However, support for integrating github, coderwall,
+    twitter, and others coming soon.</p>
+
+<pre><code>    # Social Integration options
+    social =&gt; {
+        github    =&gt; 'battlemidget',
+        coderwall =&gt; 'battlemidget',
+        twitter   =&gt; 'ajscg',
+    },
+</code></pre>
+
+<p>`dsn'
+    Database URI</p>
+
+<p>`dbuser'
+    Database User</p>
+
+<p>`dbpass'
+    Database password</p>
+
+<p>`dbconn'
+    Database connection, doesn't need to be manually set.</p>
+
+<p>`dbrs'
+    Database Resultset, again doesn't need to be set unless you implement
+    your own database layer.</p>
+
+<p>`indexPath'
+    Blog index route</p>
+
+<p>`archivePath'
+    Blog archive path</p>
+
+<p>`postPath'
+    Blog detail post path</p>
+
+<p>`adminPathPrefix'
+    Blog admin prefix route</p>
+
+<p>`namespace'
+    Blog controller namespace.</p>
+
+<p>`authCondition'
+    Router bridge for authencating the blog admin section. See the SYNOPSIS
+    for example.</p>
+
+<p>`renderType'
+    Not Implemented, however the thought behind this was to allow return
+    JSON in case someone wanted to override existing templates.</p>
+
+<p>METHODS
+    Mojolicious::Plugin::Blog inherits all methods from Mojolicious::Plugin
+    and implements the following new ones.</p>
+
+<p>register
+      $plugin-&gt;register(Mojolicious-&gt;new);</p>
+
+<pre><code>Register plugin in Mojolicious application.
+</code></pre>
+
+<p>WHAT WORKS
+    Examples are included to show a working copy of the blog plugin for
+    viewing blog posts, creating/updating/deleting posts. As well as a
+    elementary way of authenticating to show the working admin portion.</p>
+
+<p>TODO
+    * Add form validation
+    * Make default pages look less 1990s.</p>
+
+<p>GOALS
+    Hopefully make this as database agnostic as possible and the overall
+    plugin a useful starting point for those wishing to implement a blog in
+    Mojolicious.</p>
+
+<p>PATCHES
+    I love patches and community involvement, so please get involved and
+    submit pull requests and issues at</p>
+
+<pre><code>https://github.com/battlemidget/Mojolicious-Plugin-Blog
+</code></pre>
+
+<p>SEE ALSO
+    Mojolicious, Mojolicious::Guides, <a href="http://mojolicio.us">http://mojolicio.us</a>.</p>
+
+<p>COPYRIGHT AND LICENSE
+    This plugin is copyright (c) 2013 by Adam Stokes <a href="mailto:adamjs@cpan.org">adamjs@cpan.org</a></p>
+
+<pre><code>This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+Mojolicious is copyright (c) 2013 Sebastian Riedel &lt;sri@cpan.org&gt;
+</code></pre>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
