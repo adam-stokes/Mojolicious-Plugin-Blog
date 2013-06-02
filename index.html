@@ -82,29 +82,45 @@
   ./eg/tiniblog routes
 </code></pre>
 
-<p>DESCRIPTION
-    Mojolicious::Plugin::Blog is a Mojolicious plugin. The database layer is
-    using DBIx::ResultSet so support for most databases is available. The
-    examples in this distribution utilize Postgres.</p>
+<h3>
+<a name="description" class="anchor" href="#description"><span class="octicon octicon-link"></span></a>DESCRIPTION</h3>
 
-<p>OPTIONS
-    The blog options provide the gateway into defining your routes, database
-    connection, authentication conditions, blog title, slogan, and more.</p>
+<pre><code>Mojolicious::Plugin::Blog is a Mojolicious plugin. The database layer is
+using DBIx::ResultSet so support for most databases is available. The
+examples in this distribution utilize Postgres.
+</code></pre>
 
-<p>`title'
-    Your blog title.</p>
+<h3>
+<a name="options" class="anchor" href="#options"><span class="octicon octicon-link"></span></a>OPTIONS</h3>
 
-<p>`slogan'
-    Blog slogan.</p>
+<pre><code>The blog options provide the gateway into defining your routes, database
+connection, authentication conditions, blog title, slogan, and more.
+</code></pre>
 
-<p>`author'
-    Who are you?</p>
+<p>`title'</p>
 
-<p>`contact'
-    Your email</p>
+<pre><code>Your blog title.
+</code></pre>
 
-<p>`tz'
-    What timezone are you? e.g. 'America/New_York' for EST.</p>
+<p>`slogan'</p>
+
+<pre><code>Blog slogan.
+</code></pre>
+
+<p>`author'</p>
+
+<pre><code>Who are you?
+</code></pre>
+
+<p>`contact'</p>
+
+<pre><code>Your email
+</code></pre>
+
+<p>`tz'</p>
+
+<pre><code>What timezone are you? e.g. 'America/New_York' for EST.
+</code></pre>
 
 <p>`social'
     Not implemented yet. However, support for integrating github, coderwall,
@@ -118,83 +134,126 @@
     },
 </code></pre>
 
-<p>`dsn'
-    Database URI</p>
+<p>`dsn'</p>
 
-<p>`dbuser'
-    Database User</p>
-
-<p>`dbpass'
-    Database password</p>
-
-<p>`dbconn'
-    Database connection, doesn't need to be manually set.</p>
-
-<p>`dbrs'
-    Database Resultset, again doesn't need to be set unless you implement
-    your own database layer.</p>
-
-<p>`indexPath'
-    Blog index route</p>
-
-<p>`archivePath'
-    Blog archive path</p>
-
-<p>`postPath'
-    Blog detail post path</p>
-
-<p>`adminPathPrefix'
-    Blog admin prefix route</p>
-
-<p>`namespace'
-    Blog controller namespace.</p>
-
-<p>`authCondition'
-    Router bridge for authencating the blog admin section. See the SYNOPSIS
-    for example.</p>
-
-<p>`renderType'
-    Not Implemented, however the thought behind this was to allow return
-    JSON in case someone wanted to override existing templates.</p>
-
-<p>METHODS
-    Mojolicious::Plugin::Blog inherits all methods from Mojolicious::Plugin
-    and implements the following new ones.</p>
-
-<p>register
-      $plugin-&gt;register(Mojolicious-&gt;new);</p>
-
-<pre><code>Register plugin in Mojolicious application.
+<pre><code>Database URI
 </code></pre>
 
-<p>WHAT WORKS
-    Examples are included to show a working copy of the blog plugin for
-    viewing blog posts, creating/updating/deleting posts. As well as a
-    elementary way of authenticating to show the working admin portion.</p>
+<p>`dbuser'</p>
 
-<p>TODO
-    * Add form validation
-    * Make default pages look less 1990s.</p>
-
-<p>GOALS
-    Hopefully make this as database agnostic as possible and the overall
-    plugin a useful starting point for those wishing to implement a blog in
-    Mojolicious.</p>
-
-<p>PATCHES
-    I love patches and community involvement, so please get involved and
-    submit pull requests and issues at</p>
-
-<pre><code>https://github.com/battlemidget/Mojolicious-Plugin-Blog
+<pre><code>Database User
 </code></pre>
 
-<p>SEE ALSO
-    Mojolicious, Mojolicious::Guides, <a href="http://mojolicio.us">http://mojolicio.us</a>.</p>
+<p>`dbpass'</p>
 
-<p>COPYRIGHT AND LICENSE
-    This plugin is copyright (c) 2013 by Adam Stokes <a href="mailto:adamjs@cpan.org">adamjs@cpan.org</a></p>
+<pre><code>Database password
+</code></pre>
 
-<pre><code>This is free software; you can redistribute it and/or modify it under
+<p>`dbconn'</p>
+
+<pre><code>Database connection, doesn't need to be manually set.
+</code></pre>
+
+<p>`dbrs'</p>
+
+<pre><code>Database Resultset, again doesn't need to be set unless you implement
+your own database layer.
+</code></pre>
+
+<p>`indexPath'</p>
+
+<pre><code>Blog index route
+</code></pre>
+
+<p>`archivePath'</p>
+
+<pre><code>Blog archive path
+</code></pre>
+
+<p>`postPath'</p>
+
+<pre><code>Blog detail post path
+</code></pre>
+
+<p>`adminPathPrefix'</p>
+
+<pre><code>Blog admin prefix route
+</code></pre>
+
+<p>`namespace'</p>
+
+<pre><code>Blog controller namespace.
+</code></pre>
+
+<p>`authCondition'</p>
+
+<pre><code>Router bridge for authencating the blog admin section. See the SYNOPSIS
+for example.
+</code></pre>
+
+<p>`renderType'</p>
+
+<pre><code>Not Implemented, however the thought behind this was to allow return
+JSON in case someone wanted to override existing templates.
+</code></pre>
+
+<h3>
+<a name="methods" class="anchor" href="#methods"><span class="octicon octicon-link"></span></a>METHODS</h3>
+
+<pre><code>Mojolicious::Plugin::Blog inherits all methods from Mojolicious::Plugin
+and implements the following new ones.
+</code></pre>
+
+<p>register</p>
+
+<pre><code>$plugin-&gt;register(Mojolicious-&gt;new);
+Register plugin in Mojolicious application.
+</code></pre>
+
+<h3>
+<a name="what-works" class="anchor" href="#what-works"><span class="octicon octicon-link"></span></a>WHAT WORKS</h3>
+
+<pre><code>Examples are included to show a working copy of the blog plugin for
+viewing blog posts, creating/updating/deleting posts. As well as a
+elementary way of authenticating to show the working admin portion.
+</code></pre>
+
+<h3>
+<a name="todo" class="anchor" href="#todo"><span class="octicon octicon-link"></span></a>TODO</h3>
+
+<pre><code>* Add form validation
+* Make default pages look less 1990s.
+</code></pre>
+
+<h3>
+<a name="goals" class="anchor" href="#goals"><span class="octicon octicon-link"></span></a>GOALS</h3>
+
+<pre><code>Hopefully make this as database agnostic as possible and the overall
+plugin a useful starting point for those wishing to implement a blog in
+Mojolicious.
+</code></pre>
+
+<h3>
+<a name="patches" class="anchor" href="#patches"><span class="octicon octicon-link"></span></a>PATCHES</h3>
+
+<pre><code>I love patches and community involvement, so please get involved and
+submit pull requests and issues at
+
+https://github.com/battlemidget/Mojolicious-Plugin-Blog
+</code></pre>
+
+<h3>
+<a name="see-also" class="anchor" href="#see-also"><span class="octicon octicon-link"></span></a>SEE ALSO</h3>
+
+<pre><code>Mojolicious, Mojolicious::Guides, http://mojolicio.us.
+</code></pre>
+
+<h3>
+<a name="copyright-and-license" class="anchor" href="#copyright-and-license"><span class="octicon octicon-link"></span></a>COPYRIGHT AND LICENSE</h3>
+
+<pre><code>This plugin is copyright (c) 2013 by Adam Stokes &lt;adamjs@cpan.org&gt;
+
+This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 Mojolicious is copyright (c) 2013 Sebastian Riedel &lt;sri@cpan.org&gt;
