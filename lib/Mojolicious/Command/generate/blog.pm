@@ -75,6 +75,23 @@ plugin 'Blog' => {
     dsn           => "dbi:SQLite:dbname=db/myblog.db",
 };
 
+get '/login' => sub {
+    my $self = shift;
+    $self->render('login');
+};
+
+get '/logout' => sub {
+  my $self = shift;
+  $self->session->{authenticated} = undef;
+  $self->redirect_to('/login');
+};
+
+post '/login' => sub {
+  my $self= shift;
+  $self->session->{authenticated} = 1;
+  $self->redirect_to('/admin/blog/');
+};
+
 __END__
 
 =head1 NAME
