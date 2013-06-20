@@ -4,7 +4,6 @@ use strictures 1;
 use Mojo::Base 'Mojolicious::Plugin';
 use File::Basename 'dirname';
 use File::Spec::Functions 'catdir';
-use DBIx::ResultSet;
 
 use Mojolicious::Plugin::Blog::Controller;
 
@@ -27,11 +26,8 @@ my %defaults = (
     },
 
     # DBIx::Connector supported Database Credentials
-    dsn    => undef,
-    dbuser => undef,
-    dbpass => undef,
-    dbconn => undef,
-    dbrs   => undef,
+    # Use Mojolicious::Plugin::Blog::FileStore for static files.
+    storage => 'Mojolicious::Plugin::Blog::DBStore',
 
     # Default routes
     indexPath       => '/blog/',
@@ -62,13 +58,6 @@ sub register {
 
     $app->helper(blogconf => sub { \%conf });
 
-    # Connect to our trusty database
-    $app->blogconf->{dbconn} = DBIx::ResultSet->connect(
-        $app->blogconf->{dsn},
-        $app->blogconf->{dbuser},
-        $app->blogconf->{dbpass},
-    );
-    $app->blogconf->{dbrs} = $app->blogconf->{dbconn}->resultset('posts');
 
     $app->routes->route($conf{indexPath})->via('GET')->to(
         namespace  => $conf{namespace},
@@ -99,11 +88,12 @@ sub register {
             _blog_conf => \%conf,
         );
 
-        $auth_r->route($conf{adminPathPrefix} . "/blog/new")->via(qw(GET POST))->to(
+        $auth_r->route($conf{adminPathPrefix} . "/blog/new")
+          ->via(qw(GET POST))->to(
             namespace  => $conf{namespace},
             action     => 'admin_blog_new',
             _blog_conf => \%conf,
-        );
+          );
         $auth_r->route($conf{adminPathPrefix} . "/blog/edit/:id")->via('GET')
           ->to(
             namespace  => $conf{namespace},
