@@ -9,8 +9,7 @@ use Data::Dump qw[pp];
 sub blog_index {
     my $self  = shift;
     my $rs    = $self->dbrs;
-    my $posts = $rs->search({}, {limit => 15})
-      ->array_of_hash_rows(['id', 'title', 'body', 'created']);
+    my $posts = $self->blogconf->search({}, {limit => 15});
 
     $self->stash(postlist => $posts);
     $self->render('blog_index');

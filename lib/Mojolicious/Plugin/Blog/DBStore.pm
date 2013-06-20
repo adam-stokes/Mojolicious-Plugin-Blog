@@ -17,6 +17,14 @@ sub establish {
     $self->dbrs($self->dbconn->resultset('posts'));
 }
 
+sub search {
+    my $self = shift;
+    my $app  = shift;
+    my ($criteria, $opts) = @_;
+    $self->dbrs->search($criteria, $opts)
+      ->array_of_hash_rows(['id', 'title', 'body', 'created']);
+}
+
 1;
 
 __END__

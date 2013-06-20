@@ -58,6 +58,8 @@ sub register {
 
     $app->helper(blogconf => sub { \%conf });
 
+    # Establish storage
+    $conf{storage} = $conf{storage}->establish;
 
     $app->routes->route($conf{indexPath})->via('GET')->to(
         namespace  => $conf{namespace},
